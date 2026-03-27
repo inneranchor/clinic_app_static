@@ -48,7 +48,12 @@
   </style>
 
   <script>
+    // The value below is injected by flutter build, do not touch.
+    // Use double quotes so version strings with single quotes (e.g. from CI) don't break the script.
     var serviceWorkerVersion = "0";
+    if (typeof serviceWorkerVersion !== "string" || serviceWorkerVersion.indexOf("{{") !== -1) {
+      serviceWorkerVersion = "0";
+    }
   </script>
   <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
   <!-- This script adds the flutter initialization JS code -->
@@ -130,7 +135,7 @@ _flutter.buildConfig = {"engineRevision":"052f31d115eceda8cbff1b3481fcde4330c4ae
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
       _flutter.loader.load({
-        onEntrypointLoaded: function(engineInitializer) {
+                onEntrypointLoaded: function(engineInitializer) {
           engineInitializer.initializeEngine().then(function(appRunner) {
             appRunner.runApp();
           });
