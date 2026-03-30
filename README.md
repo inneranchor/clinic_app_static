@@ -34,9 +34,9 @@ From the `clinic_app` directory in the monorepo:
 # 1. Build the mock web app
 flutter build web --target lib/main_mock.dart --base-href /clinic_app_static/
 
-# 2. Replace the contents of this repo (keep .git and non-app files)
+# 2. Replace the contents of this repo (keep .git)
 cd /path/to/clinic_app_static
-find . -maxdepth 1 -not -name '.git' -not -name '.' -not -name 'compliance.pdf' -not -name 'figma' -exec rm -rf {} +
+find . -maxdepth 1 -not -name '.git' -not -name '.' -exec rm -rf {} +
 cp -r /path/to/clinic_app/build/web/* .
 touch .nojekyll
 
@@ -51,21 +51,7 @@ touch .nojekyll
 cp index.html 404.html
 
 # 5. Replace the .env with mock values (strip real secrets)
-cat > assets/assets/env/.env << 'EOF'
-API_HOST=http://localhost:3001
-CLINIC_HOST=http://localhost:3000
-NODE_ENV_SHORTFORM=demo
-TWILIO_ACCOUNT_SID=mock
-TWILIO_AUTH_TOKEN=mock
-VAPID_KEY=mock
-GOOGLE_AUTH_CLIENT_ID=mock
-APPLE_SERVICE_ID=mock
-APPLE_REDIRECT_URI=https://example.com/auth
-POSTHOG_API_KEY=mock
-BASE64_FIREBASE_CONFIG=eyJhcGlLZXkiOiJtb2NrLWFwaS1rZXkiLCJhdXRoRG9tYWluIjoibW9jay5maXJlYmFzZWFwcC5jb20iLCJwcm9qZWN0SWQiOiJtb2NrLXByb2plY3QiLCJzdG9yYWdlQnVja2V0IjoibW9jay5hcHBzcG90LmNvbSIsIm1lc3NhZ2luZ1NlbmRlcklkIjoiMDAwMDAwMDAwMDAwIiwid2ViQXBwSWQiOiIxOjAwMDAwMDAwMDAwMDp3ZWI6bW9jayJ9
-GCP_API_PROJECT_NAME=demo
-GCP_PROJECT_NAME=demo
-EOF
+cp .env.example assets/assets/env/.env
 
 # 6. Commit and push
 git add -A && git commit -m "Update demo build" && git push
@@ -85,7 +71,7 @@ GitHub Pages deploys automatically from the `main` branch.
 
 - The `404.html` is a copy of `index.html` — required for Flutter's client-side routing to work on GitHub Pages.
 - The `.nojekyll` file disables Jekyll processing which would break asset paths.
-- The `.env` must contain dummy values for all env vars the app reads but no real secrets.
+- The `.env` must contain dummy values for all env vars the app reads but no real secrets. See `.env.example`.
 - The mock GraphQL client uses `FetchPolicy.noCache` to avoid cache write exceptions from data lacking `__typename` fields.
 - Mutations return generic `{ Id: "mock-...", Status: "COMPLETED" }` stubs.
 - The `findPatientsByProvider` mock returns association wrapper objects (with nested `Patient` key), not flat patient objects — this matches what the data source parser expects.
